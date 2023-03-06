@@ -103,6 +103,7 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
+            ticket.setNumberOfVisites(ticketDAO.getNumberOfVisitesDAO(vehicleRegNumber));// ligne pour affecter le nombre de visites (réduction 5%)
             fareCalculatorService.calculateFare(ticket);
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();

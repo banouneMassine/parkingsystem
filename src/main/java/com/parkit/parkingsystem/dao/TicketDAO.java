@@ -68,6 +68,28 @@ public class TicketDAO {
             return ticket;
         }
     }
+    
+    
+    public int getNumberOfVisitesDAO(String vehicleRegNumber) {
+        Connection con = null;
+        int numberOfVisites = 0 ; 
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_NUMBER_OF_VISITES);
+            
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+                numberOfVisites = rs.getInt(1);
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching nunmber of visite",ex);
+        }
+        return numberOfVisites ;
+    }
 
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
