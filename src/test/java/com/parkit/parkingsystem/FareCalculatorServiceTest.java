@@ -172,5 +172,94 @@ public class FareCalculatorServiceTest {
         //THENE
         assertEquals( (0) , ticket.getPrice());
     }
+    @Test
+    @DisplayName("Tester que pour plus de 4 visites, l'utilisateur va bénéficier d'une réduction de 5% (Voiture)")
+    public void calculateFareCar_WhenTheUserIsRecurring_TheneReduction(){
+    	
+    	// GIVEN
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );//60 minutes parking  time should give 1.425 dollars
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        int numberOfVisite = 5; // pour plus de 4  visites le user doit bénéficier de 5 % de réduction 
+        
+        ticket.setNumberOfVisites(numberOfVisite);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        
+        //WhENE 
+        fareCalculatorService.calculateFare(ticket);
+        
+        //THENE
+        assertEquals( (Fare.CAR_RATE_PER_HOUR * 0.95) , ticket.getPrice());
+    }
     
+    @Test
+    @DisplayName("Tester que pour plus de 4 visites, l'utilisateur va bénéficier d'une réduction de 5% (Velo)")
+    public void calculateFareBike_WhenTheUserIsRecurring_TheneReduction(){
+    	
+    	// GIVEN
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );//60 minutes parking  time should give 1.425 dollars
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+        int numberOfVisite = 5; // pour plus de 4  visites le user doit bénéficier de 5 % de réduction 
+        
+        ticket.setNumberOfVisites(numberOfVisite);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        
+        //WhENE 
+        fareCalculatorService.calculateFare(ticket);
+        
+        //THENE
+        assertEquals( (Fare.BIKE_RATE_PER_HOUR * 0.95) , ticket.getPrice());
+    }
+    @Test
+    @DisplayName("Tester que pour moins ou égal à  4 visites, l'utilisateur ne va pas bénéficier d'une réduction de 5% (Voiture)")
+    public void calculateFareCar_WhenTheUserIsNonRecurring_TheneNonReduction(){
+    	
+    	// GIVEN
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );//60 minutes parking  time should give 1.425 dollars
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        int numberOfVisite = 4; // pour moins de 4  visites le user ne doit pas bénéficier de 5 % de réduction n 
+        
+        ticket.setNumberOfVisites(numberOfVisite);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        
+        //WhENE 
+        fareCalculatorService.calculateFare(ticket);
+        
+        //THENE
+        assertEquals( (Fare.CAR_RATE_PER_HOUR * 1) , ticket.getPrice());
+    }
+    
+    @Test
+    @DisplayName("Tester que pour moins ou égal à  4 visites, l'utilisateur ne va pas bénéficier d'une réduction de 5% (Velo)")
+    public void calculateFareBike_WhenTheUserIsNonRecurring_TheneNonReduction(){
+    	
+    	// GIVEN
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );//60 minutes parking  time should give 1.425 dollars
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+        int numberOfVisite = 4; // pour moins de 4  visites le user ne doit pas bénéficier de 5 % de réduction 
+        
+        ticket.setNumberOfVisites(numberOfVisite);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        
+        //WhENE 
+        fareCalculatorService.calculateFare(ticket);
+        
+        //THENE
+        assertEquals( (Fare.BIKE_RATE_PER_HOUR * 1) , ticket.getPrice());
+    }
 }
