@@ -1,12 +1,12 @@
 package com.parkit.parkingsystem;
 
-import com.parkit.parkingsystem.constants.ParkingType;
-import com.parkit.parkingsystem.dao.ParkingSpotDAO;
-import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.model.ParkingSpot;
-import com.parkit.parkingsystem.model.Ticket;
-import com.parkit.parkingsystem.service.ParkingService;
-import com.parkit.parkingsystem.util.InputReaderUtil;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +16,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.dao.ParkingSpotDAO;
+import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.model.ParkingSpot;
+import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.ParkingService;
+import com.parkit.parkingsystem.util.InputReaderUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.mockito.Mockito.*;
+import nl.altindag.log.LogCaptor;
+import org.junit.jupiter.api.Test;
 
 @ExtendWith(MockitoExtension.class)
 
@@ -39,15 +42,21 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
-    
-    ParkingService parkingService2 = new ParkingService(inputReaderUtil,parkingSpotDAO,ticketDAO);
     @BeforeEach
     private void setUpPerTest() {
         try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");// récuperer la matriculation de la voiture
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
+            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+            Ticket ticket = new Ticket();
+            LocalDateTime InTime = LocalDateTime.now().minusMinutes(60);
+            ticket.setInTime(InTime);
+            ticket.setParkingSpot(parkingSpot);
+            ticket.setVehicleRegNumber("ABCDEF");
+            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+           
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-            
         } catch (Exception e) {
             e.printStackTrace();
             throw  new RuntimeException("Failed to set up test mock objects");
@@ -55,91 +64,68 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("Tester le cas nominal pour processExitingVehicleTest(try)")
-    public void processExitingVehicleTest(){
+    @DisplayName("Tester que la mise a jour du parking a la sortie du client a bien été faite")
+    public void processExitingVehicle_callUpdateParking_wheneUpdateTicketIsTrue(){
     	
-    	ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);// place de parking
-        Ticket ticket = new Ticket();
-       // ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));// l'heure d'entrée 
-        ticket.setParkingSpot(parkingSpot);// numéro de parking
-        ticket.setVehicleRegNumber("ABCDEF");// matricule
-         
-    	when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+    	when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-        
+         
         parkingService.processExitingVehicle();
-       
+        
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
     
     @Test
-    @DisplayName("Tester le cas ou l'utilisateur a renseigner une immatriculation inconnue (catch)")
-    public void processExitingVehicle_TestWheneVehicleRegNumberIsUnknown_TheneGetExeption()
+    @DisplayName("Tester que quand la mise à jour du ticket renvoie False alors un message d'erreur/d'info s'affiche   ")
+    public void processExitingVehicle_returnErrorMessage_wheneUpdateTicketIsFalse()
     {
-    		//GIVEN
-    	 	doThrow(new RuntimeException("mock exception")).when(ticketDAO).getTicket(anyString());
-    	 
-    	 	String expectedOutput = "Unable to process exiting vehicle";
-    	    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    	    System.setOut(new PrintStream(outContent));
-    	    
-    	    //WHENE
-    	    parkingService.processExitingVehicle();
-    	   
-    	    //THENE
-    	    assertThat(outContent.toString().trim()).contains(expectedOutput);
-    }
-    @Test
-    @DisplayName("Tester le cas ou la MAJ du ticket renvoie un false ( la MAJ ne s'est pas déroulé correctement)")
-    public void processExitingVehicle_TestWheneUpdateTicketReturnFalse_TheneGetMessageError()
-    {
-    		//GIVEN
-	    	ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);// place de parking
-	        Ticket ticket = new Ticket();
-	        //ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));// l'heure d'entrée 
-	        ticket.setParkingSpot(parkingSpot);// numéro de parking
-	        ticket.setVehicleRegNumber("ABCDEF");// matricule
-	         
-	        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-    		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
-    	 
-    	 	String expectedOutput = "Unable to update ticket information. Error occurred";
-    	    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    	    System.setOut(new PrintStream(outContent));
-    	    
-    	    //WHENE
-    	    parkingService.processExitingVehicle();
-    	   
-    	    //THENE
-    	    assertThat(outContent.toString().trim()).contains(expectedOutput);
-    }
-    
-    
-    @Test
-    @DisplayName("Tester le cas nominal pour processIncomingVehicle(try)")
-    @Disabled
-    public void processIncomingVehicleTest()
-    {
-    	ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,true);// place de parking
-    	parkingSpot.setAvailable(false);
+    	//GIVEN
+    	LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
+    	when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
     	
-    	LocalDateTime inTime = LocalDateTime.now();
-        Ticket ticket = new Ticket();
-        //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-        //ticket.setId(ticketID);
-        ticket.setParkingSpot(parkingSpot);
-        ticket.setVehicleRegNumber("ABCDEF");// matricule
-        ticket.setPrice(0);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(null);
-       
-    	
-    	parkingService.processIncomingVehicle();
+    	//WHEN
+        parkingService.processExitingVehicle();
         
-    
+        // THEN 
+        assertThat(logCaptor.getInfoLogs()).containsExactly("Unable to update ticket information. Error occurred");
+    }
+     
+    @Test
+    @DisplayName("Tester que quand une erreur survienne dans le bloc try alors un message d'erreur/d'info s'affiche  ")
+    public void processExitingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry()
+    {
+    	//GIVEN
+    	LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
+        
+    	when(ticketDAO.getTicket(anyString())).thenThrow(new RuntimeException());
+    	
+    	//WHEN
+        parkingService.processExitingVehicle();
+        
+        // THEN 
+        assertThat(logCaptor.getInfoLogs()).containsExactly("Unable to process exiting vehicle");
     }
     
     
     
+    
+    
+    
+    
+    
+    @Test
+    @DisplayName("Tester que la sauvgarde du ticket se fait bien à pour véhicule entrant ")
+    @Disabled
+    public void processIncomingVehicle_callSaveTicket_wheneparkingSpotIdIS()
+    {
+    	//GIVEN
+    	when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+    	
+    	//
+        parkingService.processExitingVehicle();
+        
+        // THEN 
+        
+    }
+
 }

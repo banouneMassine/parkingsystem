@@ -1,26 +1,25 @@
 package com.parkit.parkingsystem.service;
 
+import java.time.LocalDateTime;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 public class ParkingService {
 
-    private static final Logger logger = LogManager.getLogger("ParkingService");
+    private static final Logger logger = LogManager.getLogger(ParkingService.class);
 
     private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
-
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
-    private  TicketDAO ticketDAO;
+    private TicketDAO ticketDAO;
 
     public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
         this.inputReaderUtil = inputReaderUtil;
@@ -28,7 +27,7 @@ public class ParkingService {
         this.ticketDAO = ticketDAO;
     }
 
-    public void processIncomingVehicle() {
+    public void processIncomingVehicle() {//traiter le véhicule entrant
         try{
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
@@ -97,11 +96,10 @@ public class ParkingService {
             }
         }
     }
-
-    public void processExitingVehicle() {
+ 
+    public void processExitingVehicle() {//traiter le véhicule sortant
         try{
             String vehicleRegNumber = getVehichleRegNumber();
-            
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             LocalDateTime outTime = LocalDateTime.now();
             ticket.setOutTime(outTime);
@@ -116,12 +114,11 @@ public class ParkingService {
                 System.out.println("Please pay the parking fare:" + ticket.getPrice());
                 System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
             }else{
-                System.out.println("Unable to update ticket information. Error occurred");
-                logger.info("toto");
+                
+                logger.info("Unable to update ticket information. Error occurred");
             }
         }catch(Exception e){
-            logger.error("Unable to process exiting vehicle",e);
-            System.out.println("Unable to process exiting vehicle");
+            logger.info("Unable to process exiting vehicle",e);
         }
     }
 }
