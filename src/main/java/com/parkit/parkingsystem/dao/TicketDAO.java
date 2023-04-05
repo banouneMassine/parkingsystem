@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-public class TicketDAO {
+public class TicketDAO { 
 
     private static final Logger logger = LogManager.getLogger("TicketDAO");
 

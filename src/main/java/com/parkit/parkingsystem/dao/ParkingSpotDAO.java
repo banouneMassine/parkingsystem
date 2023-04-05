@@ -18,7 +18,7 @@ public class ParkingSpotDAO {
 
     public int getNextAvailableSlot(ParkingType parkingType){
         Connection con = null;
-        int result=-1;
+        int result=-1; 
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);

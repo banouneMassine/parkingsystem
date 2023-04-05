@@ -24,7 +24,7 @@ public class FareCalculatorService {
                 break;
             }
             case BIKE: {
-            	
+            	 
             	 far = (durationInMinutes <= 30)?Fare.Vehicule_RATE_Less_30_minutes : Fare.BIKE_RATE_PER_HOUR ;
                  ticket.setPrice(durationInMinutes/60.0 * far * coef );
                 break;
