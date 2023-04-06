@@ -15,6 +15,12 @@
     </properties>
 
     <dependencies>
+    	<dependency>
+	    <groupId>io.github.hakky54</groupId>
+	    <artifactId>logcaptor</artifactId>
+	    <version>2.9.0</version>
+	    <scope>test</scope>
+	</dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -36,6 +42,16 @@
             <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
+        
+       
+		<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.24.2</version>
+    <scope>test</scope>
+</dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
