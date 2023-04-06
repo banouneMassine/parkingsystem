@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class TicketDAO { 
 
@@ -109,7 +110,7 @@ public class TicketDAO {
         return false;
     } 
     
-    public boolean verifyVehicleRegNumber(String vehicleRegNumber)
+    public boolean verifyVehicleRegNumber(String vehicleRegNumber )
     {
     	Connection con = null;
         try {
@@ -118,12 +119,17 @@ public class TicketDAO {
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-               return true ;
+               LocalDateTime outTime = rs.getTimestamp(5).toLocalDateTime();
+               if(outTime == null)
+               {
+            	   return true ;
+               }
+               
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
-            logger.error("Error retrieving vehicle registration information",ex);
+        	logger.error("Error retrieving vehicle registration information",ex);
         }
         return false;
     }
