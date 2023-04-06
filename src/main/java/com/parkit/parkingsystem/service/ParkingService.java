@@ -35,14 +35,11 @@ public class ParkingService {
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
-
 				LocalDateTime inTime = LocalDateTime.now();
 				Ticket ticket = new Ticket();
-				// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-				// ticket.setId(ticketID);
 				ticket.setParkingSpot(parkingSpot);
-				ticket.setVehicleRegNumber(vehicleRegNumber); 
-				ticket.setPrice(0);  
+				ticket.setVehicleRegNumber(vehicleRegNumber);
+				ticket.setPrice(0);
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
 
@@ -51,13 +48,12 @@ public class ParkingService {
 				} else {
 					ticketDAO.saveTicket(ticket);
 				}
-
 				System.out.println("Generated Ticket and saved in DB");
 				System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 				System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
 			}
 		} catch (Exception e) {
-			logger.info("Unable to process incoming vehicle", e);
+			logger.error("Unable to process incoming vehicle", e);
 		}
 	}
 
@@ -107,27 +103,32 @@ public class ParkingService {
 		}
 		}
 	}
-
+	
 	public void processExitingVehicle() {// traiter le véhicule sortant
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();
-			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-			LocalDateTime outTime = LocalDateTime.now();
-			ticket.setOutTime(outTime);
-			ticket.setNumberOfVisites(ticketDAO.getNumberOfVisitesDAO(vehicleRegNumber));// ligne pour affecter le
-																							// nombre de visites
-																							// (réduction 5%)
-			fareCalculatorService.calculateFare(ticket);
+			
+			if (ticketDAO.verifyVehicleRegNumber(vehicleRegNumber)) {
+				Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+				LocalDateTime outTime = LocalDateTime.now();
+				ticket.setOutTime(outTime);
+				ticket.setNumberOfVisites(ticketDAO.getNumberOfVisitesDAO(vehicleRegNumber));// ligne pour affecter le
+																								// nombre de visites
+																								// (réduction 5%)
+				fareCalculatorService.calculateFare(ticket);
 
-			if (ticketDAO.updateTicket(ticket)) {
-				ParkingSpot parkingSpot = ticket.getParkingSpot();
-				parkingSpot.setAvailable(true);
-				parkingSpotDAO.updateParking(parkingSpot);
-				System.out.println("Please pay the parking fare:" + ticket.getPrice());
-				System.out.println(
-						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+				if (ticketDAO.updateTicket(ticket)) {
+					ParkingSpot parkingSpot = ticket.getParkingSpot();
+					parkingSpot.setAvailable(true);
+					parkingSpotDAO.updateParking(parkingSpot);
+					System.out.println("Please pay the parking fare:" + ticket.getPrice());
+					System.out.println(
+							"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+				} else {
+					logger.info("Unable to update ticket information. Error occurred");
+				}
 			} else {
-				logger.info("Unable to update ticket information. Error occurred");
+				logger.error("The registration number you entered is not valid");
 			}
 		} catch (Exception e) {
 			logger.info("Unable to process exiting vehicle", e);
