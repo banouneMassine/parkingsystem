@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -26,13 +28,7 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import nl.altindag.log.LogCaptor;
-import org.junit.jupiter.api.Test;
 
 @ExtendWith(MockitoExtension.class)
 
@@ -52,13 +48,13 @@ public class ParkingServiceTest {
 		try {
 
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			e.printStackTrace();
 			throw new RuntimeException("Failed to set up test mock objects");
 		}
 	}
 
-	//@Disabled
+	@Disabled
 	@Nested
 	@Tag("traiter_le_vehicule_sortant")
 	class TraiterVehiculeSortant {
@@ -145,10 +141,34 @@ public class ParkingServiceTest {
 	@Nested
 	@Tag("traiter_le_vehicule_entrant")
 	class TraiterVehiculeEntrant {
+		//@Disabled
 		@Test
 		@DisplayName("Tester que la sauvgarde du ticket se fait bien à pour véhicule entrant ")
 		public void processIncomingVehicle_callSaveTicket_wheneparkingSpotIdIsNotNull() {
 			// GIVEN
+			try {
+				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+			} catch (Exception e) { 
+				e.printStackTrace();
+			}
+			when(inputReaderUtil.readSelection()).thenReturn(1);
+			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(false);
+			// WHEN
+			parkingService.processIncomingVehicle();
+
+			// THEN
+			verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+
+		}
+		
+		
+		@Test
+		@DisplayName("Tester que Ce n'est pas possible de mettre deux fois la même voiture dans le parking sans l'avoir fait sortir")
+		public void processIncomingVehicle_returnErrorMessage_WhenWeTryToIntroducetheSameVehicleWithouThavingItExit() {
+			// GIVEN
+			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
 			try {
 				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			} catch (Exception e) {
@@ -157,15 +177,15 @@ public class ParkingServiceTest {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
+			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(true);
 			// WHEN
-			parkingService.processIncomingVehicle();
+			parkingService.processIncomingVehicle(); 
 
 			// THEN
-			verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+			assertThat(logCaptor.getErrorLogs()).containsExactly("The registration number you entered is not valid");
 
 		}
-
+		//@Disabled
 		@Test
 		@DisplayName("Tester que quand une erreur survient dans le bloc try alors un message d'erreur/d'info s'affiche")
 		public void processIncomingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry() {
@@ -197,7 +217,6 @@ public class ParkingServiceTest {
 	class GetNextParkingNumberIfAvailable {
 		@DisplayName("Tester que si une place de parcking est disponible,alors elle ne retourne cette place de parking")
 		@Test
-		//@Disabled
 		public void getNextParkingNumberIfAvailable_returnParkingSpot_whenAvailableSlot() {
 			// GIVEN
 			when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -214,7 +233,6 @@ public class ParkingServiceTest {
 
 		@DisplayName("Tester que si il n y a pas de  place de parcking  disponible,alors afficher un message d'info pour dire que le parcking est complet")
 		@Test
-		@Disabled
 		public void getNextParkingNumberIfAvailable_returnInfoMessagInException_whenParkingIsFull() {
 			// GIVEN
 			when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -230,7 +248,6 @@ public class ParkingServiceTest {
 		
 		@DisplayName("Tester si le type de vehicule est valide , si  no afficher un message d'info ")
 		@Test
-		//@Disabled
 		public void getNextParkingNumberIfAvailable_returnInfoMessagInTheIllegalArgumentException_whenParkingTypeIsUnknown() {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
@@ -247,8 +264,7 @@ public class ParkingServiceTest {
 		
 		@DisplayName("Tester si Erreur lors de la recherche de la prochaine place de parking disponible ")
 		@Test
-		//@Disabled
-		public void getNextParkingNumberIfAvailable_returnInfoMessagException_whengetNextAvailableSlotReturnAnError () {
+		public void getNextParkingNumberIfAvailable_returnInfoMessagException_whenGetNextAvailableSlotReturnAnError () {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
 			when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -266,10 +282,4 @@ public class ParkingServiceTest {
 	}
 	
 
-	@Nested
-	@Tag("Obtenir_le_type_de_vehicule")
-	class GetVehichleType
-	{
-		
-	}
 }
