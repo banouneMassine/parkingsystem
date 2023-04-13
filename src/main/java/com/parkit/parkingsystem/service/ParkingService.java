@@ -28,7 +28,7 @@ public class ParkingService {
 	}
 
 	public void processIncomingVehicle() {// traiter le véhicule entrant
-		try {// possible de mettre deux fois la même voiture dans le parking
+		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehichleRegNumber();
@@ -41,16 +41,19 @@ public class ParkingService {
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(0);
 				ticket.setInTime(inTime);
-				ticket.setOutTime(null);
+				LocalDateTime outTime = null;
+				ticket.setOutTime(outTime);
 
 				if (ticketDAO.verifyVehicleRegNumber(vehicleRegNumber)) {
 					logger.error("The registration number you entered is not valid");
 				} else {
+					System.out.println("saveTicket saveTicket saveTicketsaveTicket saveTicket");
 					ticketDAO.saveTicket(ticket);
 				}
 				System.out.println("Generated Ticket and saved in DB");
 				System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 				System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+			
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process incoming vehicle", e);
@@ -72,10 +75,6 @@ public class ParkingService {
 				parkingSpot = new ParkingSpot(parkingNumber, parkingType, true);
 			} else {
 				throw new Exception("Error fetching parking number from DB. Parking slots might be full");
-
-				/*
-				 * pas encore testé
-				 */
 			}
 		} catch (IllegalArgumentException ie) {
 			logger.info("Error parsing user input for type of vehicle", ie);
@@ -107,14 +106,14 @@ public class ParkingService {
 	public void processExitingVehicle() {// traiter le véhicule sortant
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();
-			
+			System.out.println("vehicleRegNumber  ===>" + vehicleRegNumber);
 			if (ticketDAO.verifyVehicleRegNumber(vehicleRegNumber)) {
 				Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 				LocalDateTime outTime = LocalDateTime.now();
 				ticket.setOutTime(outTime);
 				ticket.setNumberOfVisites(ticketDAO.getNumberOfVisitesDAO(vehicleRegNumber));// ligne pour affecter le
 																								// nombre de visites
-																								// (réduction 5%)
+				System.out.println("outTime  avant calculateFare ===>" + outTime);																				// (réduction 5%)
 				fareCalculatorService.calculateFare(ticket);
 
 				if (ticketDAO.updateTicket(ticket)) {
