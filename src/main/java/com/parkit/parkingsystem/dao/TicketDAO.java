@@ -58,7 +58,15 @@ public class TicketDAO {
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
-                ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
+              //  ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
+                Timestamp timestamp = rs.getTimestamp(5);
+                if (timestamp != null) {
+                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
+                    ticket.setOutTime(localDateTime);
+                }else
+                {
+                	ticket.setOutTime(null);
+                }
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -119,8 +127,9 @@ public class TicketDAO {
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-               LocalDateTime outTime = rs.getTimestamp(5).toLocalDateTime();
-               if(outTime == null)
+               
+               System.out.println("temps de sortie ====> " + rs.getTimestamp(6));
+               if(rs.getTimestamp(6) == null)
                {
             	   return true ;
                }

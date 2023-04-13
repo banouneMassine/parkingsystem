@@ -18,7 +18,7 @@ public class DataBasePrepareService {
 
             //clear ticket entries;
             connection.prepareStatement("truncate table ticket").execute();
-
+System.out.println("netoyage fait");
         }catch(Exception e){
             e.printStackTrace();
         }finally {

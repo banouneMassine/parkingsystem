@@ -54,18 +54,13 @@ public class ParkingServiceTest {
 		}
 	}
 
-	//@Disabled
 	@Nested
 	@Tag("traiter_le_vehicule_sortant")
 	class TraiterVehiculeSortant {
 		@Test
 		@DisplayName("Tester que la mise a jour du parking a la sortie du client a bien été faite")
-		public void processExitingVehicle_callUpdateParking_wheneUpdateTicketIsTrue() {
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			} // pourquoi ??
+		public void processExitingVehicle_callUpdateParking_wheneUpdateTicketIsTrue() throws Exception {
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(true);
 			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -84,14 +79,10 @@ public class ParkingServiceTest {
 
 		@Test
 		@DisplayName("Tester que quand la mise à jour du ticket renvoie False alors un message d'erreur/d'info s'affiche   ")
-		public void processExitingVehicle_returnErrorMessage_wheneUpdateTicketIsFalse() {
+		public void processExitingVehicle_returnErrorMessage_wheneUpdateTicketIsFalse() throws Exception {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(true);
 			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
 
@@ -112,15 +103,11 @@ public class ParkingServiceTest {
 
 		@Test
 		@DisplayName("Tester que quand une erreur survient dans le bloc try alors un message d'erreur/d'info s'affiche  ")
-		public void processExitingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry() {
+		public void processExitingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry() throws Exception {
 			// GIVEN
 
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(true);
 			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 			Ticket ticket = new Ticket();
@@ -140,14 +127,10 @@ public class ParkingServiceTest {
 		}
 		@Test
 		@DisplayName("Tester que si le vehicule est déja sorti alors on peut pas le faire sortir une 2 eme fois    ")
-		public void processExitingVehicle_returnMessageInformation_whenTheVehicleIsAlreadyOut() {
+		public void processExitingVehicle_returnMessageInformation_whenTheVehicleIsAlreadyOut() throws Exception {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			
 			when(ticketDAO.verifyVehicleRegNumber(any(String.class))).thenReturn(false);
 			// WHEN
@@ -159,13 +142,9 @@ public class ParkingServiceTest {
 		}
 		@Test
 		@DisplayName("Tester que si le vehicule n'est pas sorti alors l'inviter a payer et a sortir normalement")
-		public void processExitingVehicle_returnMessageInformation_whenTheVehicleIsNotYetOut() {
+		public void processExitingVehicle_returnMessageInformation_whenTheVehicleIsNotYetOut() throws Exception {
 			// GIVEN
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
@@ -186,20 +165,14 @@ public class ParkingServiceTest {
 		
 	}
 
-	//@Disabled
 	@Nested
 	@Tag("traiter_le_vehicule_entrant")
 	class TraiterVehiculeEntrant {
-		//@Disabled
 		@Test
 		@DisplayName("Tester que la sauvgarde du ticket se fait bien pour véhicule entrant ")
-		public void processIncomingVehicle_callSaveTicket_wheneparkingSpotIdIsNotNull() {
+		public void processIncomingVehicle_callSaveTicket_wheneparkingSpotIdIsNotNull() throws Exception {
 			// GIVEN
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) { 
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -216,14 +189,10 @@ public class ParkingServiceTest {
 		
 		@Test
 		@DisplayName("Tester que ce n'est pas possible de mettre deux fois la même voiture dans le parking sans l'avoir fait sortir")
-		public void processIncomingVehicle_returnErrorMessage_WhenWeTryToIntroducetheSameVehicleWithouThavingItExit() {
+		public void processIncomingVehicle_returnErrorMessage_WhenWeTryToIntroducetheSameVehicleWithouThavingItExit() throws Exception {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();  
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -239,14 +208,10 @@ public class ParkingServiceTest {
 
 		@Test
 		@DisplayName("Tester que quand une erreur survient dans le bloc try alors un message d'erreur/d'info s'affiche")
-		public void processIncomingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry() {
+		public void processIncomingVehicle_returnTheExptionMessage_wheneErrorInTheBlocTry() throws Exception {
 			// GIVEN
 			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
-			try {
-				when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class)))
@@ -264,7 +229,6 @@ public class ParkingServiceTest {
 
 	@Nested
 	@Tag("Obtenir_le_prochain_numero_de_stationnement_si_disponible")
-	//@Disabled
 	class GetNextParkingNumberIfAvailable {
 		@DisplayName("Tester que si une place de parcking est disponible,alors elle ne retourne cette place de parking")
 		@Test
@@ -284,22 +248,16 @@ public class ParkingServiceTest {
 
 		@DisplayName("Tester que s'il n y a pas de place de parcking disponible,alors afficher un message d'info pour dire que le parcking est complet")
 		@Test
-		@Disabled
-		/*
-		 * ca marche pas 
-		 */
 		public void getNextParkingNumberIfAvailable_returnInfoMessagInException_whenParkingIsFull() {
 			// GIVEN
+			LogCaptor logCaptor = LogCaptor.forClass(ParkingService.class);
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
 			
-			try {
-				parkingService.getNextParkingNumberIfAvailable();
-				fail("Should throw exception when parkingNumber = 0");
-			} catch (Exception aExp) {
-				assert (aExp.getMessage().contains("Error fetching parking number from DB. Parking slots might be full"));
-			}
-
+			// WHEN 
+		    parkingService.getNextParkingNumberIfAvailable();
+			// THEN
+			assertThat(logCaptor.getInfoLogs()).containsExactly("Error fetching next available parking slot");
 		}
 		
 		@DisplayName("Tester si le type de vehicule est valide , si  no afficher un message d'info ")
