@@ -3259,3 +3259,57 @@ java.lang.NullPointerException: Cannot invoke "java.time.chrono.ChronoLocalDateT
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:452) [.cp/:?]
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:210) [.cp/:?]
 2023-04-04 15:02:31 [main] ERROR ParkingService:118 - Unable to update ticket information. Error occurred
+2023-04-19 16:55:44 [main] INFO  App:13 - Initializing Parking System
+2023-04-19 16:55:44 [main] INFO  InteractiveShell:14 - App initialized!!!
+2023-04-19 16:55:53 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:55:53 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 16:55:53 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:55:53 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:00 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 16:56:20 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:18:39 [main] INFO  App:13 - Initializing Parking System
+2023-04-19 17:18:39 [main] INFO  InteractiveShell:14 - App initialized!!!
+2023-04-19 17:18:44 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:18:45 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 17:18:45 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:18:45 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:18:51 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:45 - Closing Result Set
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:23 - Closing DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:13 - Create DB connection
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:34 - Closing Prepared Statement
+2023-04-19 17:19:02 [main] INFO  DataBaseConfig:23 - Closing DB connection
